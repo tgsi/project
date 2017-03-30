@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='utf-8'?>
+<plugin id="cordova-plugin-tgsi-wifi" version="0.0.1" xmlns="http://apache.org/cordova/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android">
+	<name>TgsiWifiPlugin</name>
+	<js-module name="TgsiWifiPlugin" src="www/TgsiWifiPlugin.js">
+		<clobbers target="window.plugins.TgsiWifiPlugin" />
+	</js-module>
+	<platform name="android">
+		<config-file parent="/*" target="res/xml/config.xml">
+			<feature name="TgsiWifiPlugin"><param name="android-package" value="cordova.plugin.tgsiwifi.TgsiWifiPlugin" /></feature>
+		</config-file>
+		<config-file parent="/*" target="AndroidManifest.xml">
+			 <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" android:required="true" />
+			<uses-permission android:name="android.permission.CHANGE_WIFI_STATE" android:required="true" />
+			<uses-permission android:name="android.permission.INTERNET" android:required="true" />
+		</config-file>
+		<source-file src="src/android/TgsiWifiPlugin.java" target-dir="src/cordova/plugin/tgsiwifi" />
+		<source-file src="src/android/ChatManager.java" target-dir="src/cordova/plugin/tgsiwifi" />
+		<source-file src="src/android/ClientSocketHandler.java" target-dir="src/cordova/plugin/tgsiwifi" />
+		<source-file src="src/android/GroupOwnerSocketHandler.java" target-dir="src/cordova/plugin/tgsiwifi" />
+		<source-file src="src/android/P2pBroadcastReceiver.java" target-dir="src/cordova/plugin/tgsiwifi" />
+		<source-file src="src/android/Peer.java" target-dir="src/cordova/plugin/tgsiwifi" />
+		<source-file src="src/android/PeerListener.java" target-dir="src/cordova/plugin/tgsiwifi" />
+		<source-file src="src/android/SystemConstant.java" target-dir="src/cordova/plugin/tgsiwifi" />
+		<source-file src="src/android/TxtListener.java" target-dir="src/cordova/plugin/tgsiwifi" />
+
+	</platform>
+</plugin>
