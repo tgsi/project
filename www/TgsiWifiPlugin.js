@@ -1,4 +1,3 @@
-cordova.define("cordova-plugin-tgsi-wifi.TgsiWifiPlugin", function(require, exports, module) {
 function TgsiWifiPlugin() {
 }
 
@@ -46,6 +45,3 @@ TgsiWifiPlugin.install = function () {
 };
 
 cordova.addConstructor(TgsiWifiPlugin.install);
-
-
-});

@@ -58,7 +58,6 @@ public class TgsiWifiPlugin extends CordovaPlugin implements WifiP2pManager.Conn
     private ChatManager chatManager;
 
 
-
     @Override
     public void initialize(CordovaInterface cordova, CordovaWebView webView) {
         super.initialize(cordova, webView);
@@ -93,6 +92,7 @@ public class TgsiWifiPlugin extends CordovaPlugin implements WifiP2pManager.Conn
         }
     }
 
+
     private void registerReceiver() {
         LOG.d("TAG", "registerReceiver");
         receiver = new P2pBroadcastReceiver(manager, channel, this);
@@ -125,14 +125,7 @@ public class TgsiWifiPlugin extends CordovaPlugin implements WifiP2pManager.Conn
             String peerName = args.getString(0);
             this.registerService(peerName, callbackContext);
         } else if (action.equals("startSearching")) {
-            cordova.getThreadPool().execute(
-                    new Runnable() {
-                        public void run() {
-                            startSearching(callbackContext);
-                        }
-                    }
-            );
-
+            startSearching(callbackContext);
         } else if (action.equals("getPeerList")) {
             this.getPeerList(callbackContext);
         } else if (action.equals("connect")) {
@@ -148,7 +141,31 @@ public class TgsiWifiPlugin extends CordovaPlugin implements WifiP2pManager.Conn
     }
 
 
-    private void registerService(String peerName, final CallbackContext callbackContext) {
+    private void registerService(final String peerName, final CallbackContext callbackContext) {
+
+        manager.clearLocalServices(channel, new ActionListener() {
+            @Override
+            public void onSuccess() {
+                register(peerName, callbackContext);
+            }
+
+            @Override
+            public void onFailure(int arg0) {
+                JSONObject response = new JSONObject();
+                try {
+                    response.put(SystemConstant.RESPONSE_MESSAGE, "Error service registration");
+                    LOG.d(TAG, "registerService-error: Error in clearing of local service");
+                    callbackContext.error(response);
+                } catch (JSONException exception) {
+                    LOG.d(TAG, "registerService-error: " + exception.getMessage());
+                }
+            }
+        });
+
+    }
+
+
+    private void register(String peerName, final CallbackContext callbackContext) {
 
         //  Create a string map containing information about your service.
         Map record = new HashMap();
@@ -180,7 +197,7 @@ public class TgsiWifiPlugin extends CordovaPlugin implements WifiP2pManager.Conn
             public void onFailure(int arg0) {
                 JSONObject response = new JSONObject();
                 try {
-                    response.put(SystemConstant.RESPONSE_MESSAGE, "Error registration");
+                    response.put(SystemConstant.RESPONSE_MESSAGE, "Error service registration");
                     callbackContext.error(response);
 
                 } catch (JSONException exception) {
@@ -191,13 +208,71 @@ public class TgsiWifiPlugin extends CordovaPlugin implements WifiP2pManager.Conn
     }
 
     private void startSearching(final CallbackContext callbackContext) {
-        discoverService();
-        discoverPeers();
+        cordova.getThreadPool().execute(
+                new Runnable() {
+                    public void run() {
+                        discoverService();
+                    }
+                }
+        );
+
+        cordova.getThreadPool().execute(
+                new Runnable() {
+                    public void run() {
+                        discoverPeers();
+                    }
+                }
+        );
+
         callbackContext.success();
     }
 
 
     private void discoverService() {
+
+        prepareDiscoveryService();
+        serviceRequest = WifiP2pDnsSdServiceRequest.newInstance();
+        manager.removeServiceRequest(channel, serviceRequest,
+                new ActionListener() {
+                    @Override
+                    public void onSuccess() {
+                        LOG.d(TAG, "removeServiceRequest: " + "SUCCESS");
+                        manager.addServiceRequest(channel,
+                                serviceRequest,
+                                new ActionListener() {
+                                    @Override
+                                    public void onSuccess() {
+                                        LOG.d(TAG, "addServiceRequest: " + "SUCCESS");
+                                        manager.discoverServices(channel, new ActionListener() {
+
+                                            @Override
+                                            public void onSuccess() {
+                                                LOG.d(TAG, "discoverServices: " + "SUCCESS");
+                                            }
+
+                                            @Override
+                                            public void onFailure(int code) {
+                                                LOG.d(TAG, "discoverServices: " + "ERROR");
+                                            }
+                                        });
+                                    }
+
+                                    @Override
+                                    public void onFailure(int code) {
+                                        LOG.d(TAG, "addServiceRequest: " + "ERROR");
+                                    }
+                                });
+                    }
+
+                    @Override
+                    public void onFailure(int code) {
+                        LOG.d(TAG, "removeServiceRequest: " + "ERROR");
+                    }
+                });
+
+    }
+
+    private void prepareDiscoveryService() {
         dnsTxtListener = new TxtListener();
 
         DnsSdServiceResponseListener servListener = new DnsSdServiceResponseListener() {
@@ -215,44 +290,9 @@ public class TgsiWifiPlugin extends CordovaPlugin implements WifiP2pManager.Conn
                 }
             }
         };
-
         manager.setDnsSdResponseListeners(channel, servListener, dnsTxtListener);
-        cordova.getThreadPool().execute(new Runnable() {
-            public void run() {
-                serviceRequest = WifiP2pDnsSdServiceRequest.newInstance();
-
-                manager.addServiceRequest(channel,
-                        serviceRequest,
-                        new ActionListener() {
-                            @Override
-                            public void onSuccess() {
-                                LOG.d(TAG, "addServiceRequest: " + "SUCCESS");
-                            }
-
-                            @Override
-                            public void onFailure(int code) {
-                                LOG.d(TAG, "addServiceRequest: " + "ERROR");
-                            }
-                        });
-
-                manager.discoverServices(channel, new ActionListener() {
-
-                    @Override
-                    public void onSuccess() {
-                        LOG.d(TAG, "discoverServices: " + "SUCCESS");
-                    }
-
-                    @Override
-                    public void onFailure(int code) {
-                        LOG.d(TAG, "discoverServices: " + "ERROR");
-                    }
-                });
-
-            }
-        });
-
-
     }
+
 
     private void discoverPeers() {
         manager.discoverPeers(channel, new WifiP2pManager.ActionListener() {
