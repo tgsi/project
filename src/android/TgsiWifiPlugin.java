@@ -411,6 +411,13 @@ public class TgsiWifiPlugin extends CordovaPlugin implements WifiP2pManager.Conn
                     info.groupOwnerAddress);
             chatThread.start();
         }
+		
+		cordova.getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                webView.loadUrl("javascript:$scope.connectToChat()");
+            }
+        });
     }
 
     private void sendMessage(final String message, final CallbackContext callbackContext) {
