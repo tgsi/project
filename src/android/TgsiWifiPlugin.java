@@ -415,7 +415,7 @@ public class TgsiWifiPlugin extends CordovaPlugin implements WifiP2pManager.Conn
 		cordova.getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                webView.loadUrl("javascript:$scope.connectToChat()");
+                webView.loadUrl("javascript:connectToChat()");
             }
         });
     }
