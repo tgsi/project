@@ -112,6 +112,25 @@ public class TgsiWifiPlugin extends CordovaPlugin implements WifiP2pManager.Conn
         super.onPause(multitasking);
         cordova.getActivity().unregisterReceiver(receiver);
     }
+	
+	@Override
+    public void onStop() {
+        if (manager != null && channel != null) {
+            manager.removeGroup(channel, new ActionListener() {
+
+                @Override
+                public void onFailure(int reasonCode) {
+                    Log.d(TAG, "Disconnect failed. Reason :" + reasonCode);
+                }
+
+                @Override
+                public void onSuccess() {
+                }
+
+            });
+        }
+        super.onStop();
+    }
 
     @Override
     public boolean execute(String action, JSONArray args, final CallbackContext callbackContext) throws JSONException {
