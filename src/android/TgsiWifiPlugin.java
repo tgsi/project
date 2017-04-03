@@ -420,6 +420,12 @@ public class TgsiWifiPlugin extends CordovaPlugin implements WifiP2pManager.Conn
             try {
                 chatThread = new GroupOwnerSocketHandler(chatHandler);
                 chatThread.start();
+				cordova.getActivity().runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+						webView.loadUrl("javascript:connectToChat()");
+					}
+				});
             } catch (IOException e) {
                 Log.d(TAG,
                         "Failed to create a server thread - " + e.getMessage());
@@ -429,14 +435,13 @@ public class TgsiWifiPlugin extends CordovaPlugin implements WifiP2pManager.Conn
             chatThread = new ClientSocketHandler(chatHandler,
                     info.groupOwnerAddress);
             chatThread.start();
+			cordova.getActivity().runOnUiThread(new Runnable() {
+				@Override
+				public void run() {
+					webView.loadUrl("javascript:collaborate()");
+				}
+			});
         }
-		
-		cordova.getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                webView.loadUrl("javascript:connectToChat()");
-            }
-        });
     }
 
     private void sendMessage(final String message, final CallbackContext callbackContext) {
