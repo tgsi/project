@@ -153,7 +153,9 @@ public class TgsiWifiPlugin extends CordovaPlugin implements WifiP2pManager.Conn
         } else if (action.equals("sendMessage")) {
             String message = args.getString(0);
             this.sendMessage(message, callbackContext);
-        } else {
+        } else if (action.equals("stopServices")) {
+            this.stopServices(callbackContext);
+        }  else {
             return false;
         }
         return true;
@@ -272,6 +274,14 @@ public class TgsiWifiPlugin extends CordovaPlugin implements WifiP2pManager.Conn
                                             @Override
                                             public void onFailure(int code) {
                                                 LOG.d(TAG, "discoverServices: " + "ERROR");
+												if (code == WifiP2pManager.P2P_UNSUPPORTED) {
+													Log.d(TAG, "P2P isn't supported on this device.");
+												} else if(code == WifiP2pManager.BUSY) {
+													Log.d(TAG, "Service is busy.");
+												} else if(code == WifiP2pManager.ERROR) {
+													Log.d(TAG, "Internal Error.");
+												}
+
                                             }
                                         });
                                     }
