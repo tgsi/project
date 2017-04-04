@@ -37,6 +37,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * This class echoes a string called from JavaScript.
@@ -56,6 +58,8 @@ public class TgsiWifiPlugin extends CordovaPlugin implements WifiP2pManager.Conn
 
     private Handler chatHandler;
     private ChatManager chatManager;
+    private Timer timer;
+
 
 
     @Override
@@ -83,6 +87,7 @@ public class TgsiWifiPlugin extends CordovaPlugin implements WifiP2pManager.Conn
         chatHandler = new Handler(this);
         enabledWifi();
         registerReceiver();
+        timer = new Timer();
     }
 
     private void enabledWifi() {
@@ -112,23 +117,10 @@ public class TgsiWifiPlugin extends CordovaPlugin implements WifiP2pManager.Conn
         super.onPause(multitasking);
         cordova.getActivity().unregisterReceiver(receiver);
     }
-	
-	@Override
+
+    @Override
     public void onStop() {
-        if (manager != null && channel != null) {
-            manager.removeGroup(channel, new ActionListener() {
-
-                @Override
-                public void onFailure(int reasonCode) {
-                    Log.d(TAG, "Disconnect failed. Reason :" + reasonCode);
-                }
-
-                @Override
-                public void onSuccess() {
-                }
-
-            });
-        }
+        removeGroup();
         super.onStop();
     }
 
@@ -228,24 +220,45 @@ public class TgsiWifiPlugin extends CordovaPlugin implements WifiP2pManager.Conn
         });
     }
 
+
+
+
     private void startSearching(final CallbackContext callbackContext) {
-        cordova.getThreadPool().execute(
-                new Runnable() {
-                    public void run() {
-                        discoverService();
-                    }
-                }
-        );
 
-        cordova.getThreadPool().execute(
-                new Runnable() {
-                    public void run() {
-                        discoverPeers();
-                    }
-                }
-        );
-
+        search();
         callbackContext.success();
+    }
+
+
+    private void search () {
+        TimerTask timerTask = new TimerTask() {
+            @Override
+            public void run() {
+                cordova.getThreadPool().execute(
+                        new Runnable() {
+                            public void run() {
+                                discoverService();
+                            }
+                        }
+                );
+
+                cordova.getThreadPool().execute(
+                        new Runnable() {
+                            public void run() {
+                                discoverPeers();
+                            }
+                        }
+                );
+            }
+        };
+
+        timer.scheduleAtFixedRate(timerTask, 0, 60 * 1000 );
+    }
+
+    private void stopTimer () {
+        if (timer != null) {
+            timer.cancel();
+        }
     }
 
 
@@ -274,13 +287,13 @@ public class TgsiWifiPlugin extends CordovaPlugin implements WifiP2pManager.Conn
                                             @Override
                                             public void onFailure(int code) {
                                                 LOG.d(TAG, "discoverServices: " + "ERROR");
-												if (code == WifiP2pManager.P2P_UNSUPPORTED) {
-													Log.d(TAG, "P2P isn't supported on this device.");
-												} else if(code == WifiP2pManager.BUSY) {
-													Log.d(TAG, "Service is busy.");
-												} else if(code == WifiP2pManager.ERROR) {
-													Log.d(TAG, "Internal Error.");
-												}
+                                                if (code == WifiP2pManager.P2P_UNSUPPORTED) {
+                                                    Log.d(TAG, "P2P isn't supported on this device.");
+                                                } else if(code == WifiP2pManager.BUSY) {
+                                                    Log.d(TAG, "Service is busy.");
+                                                } else if(code == WifiP2pManager.ERROR) {
+                                                    Log.d(TAG, "Internal Error.");
+                                                }
 
                                             }
                                         });
@@ -396,6 +409,7 @@ public class TgsiWifiPlugin extends CordovaPlugin implements WifiP2pManager.Conn
             public void onSuccess() {
                 JSONObject response = new JSONObject();
                 try {
+                    stopTimer();
                     response.put(SystemConstant.RESPONSE_MESSAGE, "SUCCESS");
                     callbackContext.success(response);
 
@@ -430,12 +444,12 @@ public class TgsiWifiPlugin extends CordovaPlugin implements WifiP2pManager.Conn
             try {
                 chatThread = new GroupOwnerSocketHandler(chatHandler);
                 chatThread.start();
-				cordova.getActivity().runOnUiThread(new Runnable() {
-					@Override
-					public void run() {
-						webView.loadUrl("javascript:connectToChat()");
-					}
-				});
+                cordova.getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        webView.loadUrl("javascript:connectToChat()");
+                    }
+                });
             } catch (IOException e) {
                 Log.d(TAG,
                         "Failed to create a server thread - " + e.getMessage());
@@ -445,12 +459,12 @@ public class TgsiWifiPlugin extends CordovaPlugin implements WifiP2pManager.Conn
             chatThread = new ClientSocketHandler(chatHandler,
                     info.groupOwnerAddress);
             chatThread.start();
-			cordova.getActivity().runOnUiThread(new Runnable() {
-				@Override
-				public void run() {
-					webView.loadUrl("javascript:collaborate()");
-				}
-			});
+            cordova.getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    webView.loadUrl("javascript:collaborate()");
+                }
+            });
         }
     }
 
@@ -466,6 +480,32 @@ public class TgsiWifiPlugin extends CordovaPlugin implements WifiP2pManager.Conn
             }
         });
     }
+
+    private void stopServices(final CallbackContext callbackContext) {
+        cordova.getActivity().unregisterReceiver(receiver);
+        removeGroup();
+        callbackContext.success();
+        stopTimer();
+    }
+
+    private void removeGroup() {
+        if (manager != null && channel != null) {
+            manager.removeGroup(channel, new ActionListener() {
+
+                @Override
+                public void onFailure(int reasonCode) {
+                    Log.d(TAG, "Disconnect failed. Reason :" + reasonCode);
+                }
+
+                @Override
+                public void onSuccess() {
+                }
+
+            });
+        }
+
+    }
+
 
     private void coolMethod(final String message, final CallbackContext callbackContext) {
         cordova.getActivity().runOnUiThread(new Runnable() {
