@@ -36,6 +36,10 @@ TgsiWifiPlugin.prototype.sendMessage =  function (data, successCallback, errorCa
     this.pInvoke("sendMessage", data, successCallback, errorCallback);
 };
 
+TgsiWifiPlugin.prototype.stopServices =  function (data, successCallback, errorCallback) {
+    this.pInvoke("stopServices", data, successCallback, errorCallback);
+};
+
 TgsiWifiPlugin.install = function () {
   if (!window.plugins) {
     window.plugins = {};
