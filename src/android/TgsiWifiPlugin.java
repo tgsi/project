@@ -409,7 +409,6 @@ public class TgsiWifiPlugin extends CordovaPlugin implements WifiP2pManager.Conn
             public void onSuccess() {
                 JSONObject response = new JSONObject();
                 try {
-                    stopTimer();
                     response.put(SystemConstant.RESPONSE_MESSAGE, "SUCCESS");
                     callbackContext.success(response);
 
@@ -466,6 +465,8 @@ public class TgsiWifiPlugin extends CordovaPlugin implements WifiP2pManager.Conn
                 }
             });
         }
+		
+		stopTimer();
     }
 
     private void sendMessage(final String message, final CallbackContext callbackContext) {
