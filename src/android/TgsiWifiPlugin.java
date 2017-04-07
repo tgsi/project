@@ -92,12 +92,12 @@ public class TgsiWifiPlugin extends CordovaPlugin implements WifiP2pManager.Conn
 
     private void enabledWifi(final String wifiFlag) {
         WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
-        if (!wifiManager.isWifiEnabled()) {
-			boolean flag = Boolean.parseBoolean(wifiFlag);
+        boolean flag = Boolean.parseBoolean(wifiFlag);
         if (!wifiManager.isWifiEnabled()) {
             wifiManager.setWifiEnabled(flag);
         } else {
 			wifiManager.setWifiEnabled(flag);
+		}
     }
 
 
