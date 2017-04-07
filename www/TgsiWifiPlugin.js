@@ -40,6 +40,10 @@ TgsiWifiPlugin.prototype.stopServices =  function (data, successCallback, errorC
     this.pInvoke("stopServices", data, successCallback, errorCallback);
 };
 
+TgsiWifiPlugin.prototype.enabledWifi =  function (data, successCallback, errorCallback) {
+    this.pInvoke("enabledWifi", data, successCallback, errorCallback);
+};
+
 TgsiWifiPlugin.install = function () {
   if (!window.plugins) {
     window.plugins = {};

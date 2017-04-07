@@ -85,16 +85,19 @@ public class TgsiWifiPlugin extends CordovaPlugin implements WifiP2pManager.Conn
 
         LOG.d("TAG", "ENABLED");
         chatHandler = new Handler(this);
-        enabledWifi();
+        //enabledWifi();
         registerReceiver();
         timer = new Timer();
     }
 
-    private void enabledWifi() {
+    private void enabledWifi(final String wifiFlag) {
         WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
         if (!wifiManager.isWifiEnabled()) {
-            wifiManager.setWifiEnabled(true);
-        }
+			boolean flag = Boolean.parseBoolean(wifiFlag);
+        if (!wifiManager.isWifiEnabled()) {
+            wifiManager.setWifiEnabled(flag);
+        } else {
+			wifiManager.setWifiEnabled(flag);
     }
 
 
@@ -147,7 +150,11 @@ public class TgsiWifiPlugin extends CordovaPlugin implements WifiP2pManager.Conn
             this.sendMessage(message, callbackContext);
         } else if (action.equals("stopServices")) {
             this.stopServices(callbackContext);
-        }  else {
+        } else if (action.equals("enabledWifi")){
+			String flag = args.getString(0);
+			this.enabledWifi(flag);
+		}
+		else {
             return false;
         }
         return true;
