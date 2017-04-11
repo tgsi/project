@@ -243,8 +243,8 @@ public class TgsiWifiPlugin extends CordovaPlugin implements WifiP2pManager.Conn
         TimerTask timerTask = new TimerTask() {
             @Override
             public void run() {
-				//cordova.getThreadPool().execute(
-                cordova.getActivity().runOnUiThread(
+				cordova.getThreadPool().execute(
+                //cordova.getActivity().runOnUiThread(
                         new Runnable() {
                             public void run() {
                                 discoverService();
@@ -252,8 +252,8 @@ public class TgsiWifiPlugin extends CordovaPlugin implements WifiP2pManager.Conn
                         }
                 );
 
-                //cordova.getThreadPool().execute(
-				cordova.getActivity().runOnUiThread(
+                cordova.getThreadPool().execute(
+				//cordova.getActivity().runOnUiThread(
                         new Runnable() {
                             public void run() {
                                 discoverPeers();
