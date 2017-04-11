@@ -118,8 +118,8 @@ public class TgsiWifiPlugin extends CordovaPlugin implements WifiP2pManager.Conn
     @Override
     public void onPause(boolean multitasking) {
         super.onPause(multitasking);
-        cordova.getActivity().unregisterReceiver(receiver);
-		finish();
+        //cordova.getActivity().unregisterReceiver(receiver);
+		cordova.getActivity().finish();
     }
 
     @Override
@@ -245,7 +245,6 @@ public class TgsiWifiPlugin extends CordovaPlugin implements WifiP2pManager.Conn
             @Override
             public void run() {
 				cordova.getThreadPool().execute(
-                //cordova.getActivity().runOnUiThread(
                         new Runnable() {
                             public void run() {
                                 discoverService();
@@ -254,7 +253,6 @@ public class TgsiWifiPlugin extends CordovaPlugin implements WifiP2pManager.Conn
                 );
 
                 cordova.getThreadPool().execute(
-				//cordova.getActivity().runOnUiThread(
                         new Runnable() {
                             public void run() {
                                 discoverPeers();
@@ -263,7 +261,6 @@ public class TgsiWifiPlugin extends CordovaPlugin implements WifiP2pManager.Conn
                 );
             }
         };
-
         timer.scheduleAtFixedRate(timerTask, 0, 60 * 1000 );
     }
 
@@ -364,8 +361,7 @@ public class TgsiWifiPlugin extends CordovaPlugin implements WifiP2pManager.Conn
 
 
     }
-
-
+	
     private void getPeerList(final CallbackContext callbackContext) {
         List<WifiP2pDevice> servicePeer = getServicePeerList();
         List<WifiP2pDevice> peerList = receiver.getPeerList();
