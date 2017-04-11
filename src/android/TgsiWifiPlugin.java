@@ -86,7 +86,7 @@ public class TgsiWifiPlugin extends CordovaPlugin implements WifiP2pManager.Conn
         LOG.d("TAG", "ENABLED");
         chatHandler = new Handler(this);
         //enabledWifi();
-        registerReceiver();
+        //registerReceiver();
         timer = new Timer();
     }
 
@@ -163,6 +163,7 @@ public class TgsiWifiPlugin extends CordovaPlugin implements WifiP2pManager.Conn
 
     private void registerService(final String peerName, final CallbackContext callbackContext) {
 
+		registerReceiver();
         manager.clearLocalServices(channel, new ActionListener() {
             @Override
             public void onSuccess() {
