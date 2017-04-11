@@ -4,6 +4,7 @@ import android.os.Handler;
 import android.util.Log;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -22,7 +23,10 @@ public class GroupOwnerSocketHandler extends Thread {
 
     public GroupOwnerSocketHandler(Handler handler) throws IOException {
         try {
-            socket = new ServerSocket(4545);
+            //socket = new ServerSocket(4545);
+            socket = new ServerSocket();
+            socket.setReuseAddress(true);
+            socket.bind(new InetSocketAddress(4545));
             this.handler = handler;
             Log.d("GroupOwnerSocketHandler", "Socket Started");
         } catch (IOException e) {
