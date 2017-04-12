@@ -59,7 +59,6 @@ public class TgsiWifiPlugin extends CordovaPlugin implements WifiP2pManager.Conn
     private Handler chatHandler;
     private ChatManager chatManager;
     private Timer timer;
-    private Thread chatThread = null;
 
 
     @Override
@@ -112,7 +111,6 @@ public class TgsiWifiPlugin extends CordovaPlugin implements WifiP2pManager.Conn
         super.onResume(multitasking);
         LOG.d("TAG", "onResume");
         receiver = new P2pBroadcastReceiver(manager, channel, this);
-        cordova.getActivity().registerReceiver(receiver, intentFilter);
     }
 
     @Override
@@ -442,7 +440,7 @@ public class TgsiWifiPlugin extends CordovaPlugin implements WifiP2pManager.Conn
     @Override
     public void onConnectionInfoAvailable(final WifiP2pInfo info) {
 
-        //Thread chatThread = null;
+        Thread chatThread = null;
 
 
         // After the group negotiation, we can determine the group owner
@@ -494,7 +492,6 @@ public class TgsiWifiPlugin extends CordovaPlugin implements WifiP2pManager.Conn
         cordova.getActivity().unregisterReceiver(receiver);
         removeGroup();
         callbackContext.success();
-		chatThread.closeSockets();
         stopTimer();
     }
 
