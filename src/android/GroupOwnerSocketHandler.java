@@ -66,4 +66,13 @@ public class GroupOwnerSocketHandler extends Thread {
             }
         }
     }
+	
+	public static void closeSockets(){
+	    try {
+            if (socket != null && !socket.isClosed())
+				socket.close();
+        } catch (IOException ioe) {
+			
+        }
+	}
 }
