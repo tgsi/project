@@ -67,7 +67,7 @@ public class GroupOwnerSocketHandler extends Thread {
         }
     }
 	
-	public static void closeSockets(){
+	public void closeSockets(){
 	    try {
             if (socket != null && !socket.isClosed())
 				socket.close();
