@@ -23,10 +23,10 @@ public class GroupOwnerSocketHandler extends Thread {
 
     public GroupOwnerSocketHandler(Handler handler) throws IOException {
         try {
-            //socket = new ServerSocket(4545);
-            socket = new ServerSocket();
-            socket.setReuseAddress(true);
-            socket.bind(new InetSocketAddress(4545));
+            socket = new ServerSocket(4545);
+            //socket = new ServerSocket();
+            //socket.setReuseAddress(true);
+            //socket.bind(new InetSocketAddress(4545));
             this.handler = handler;
             Log.d("GroupOwnerSocketHandler", "Socket Started");
         } catch (IOException e) {

@@ -61,6 +61,7 @@ public class TgsiWifiPlugin extends CordovaPlugin implements WifiP2pManager.Conn
     private Timer timer;
 
 
+
     @Override
     public void initialize(CordovaInterface cordova, CordovaWebView webView) {
         super.initialize(cordova, webView);
@@ -165,8 +166,8 @@ public class TgsiWifiPlugin extends CordovaPlugin implements WifiP2pManager.Conn
 
     private void registerService(final String peerName, final CallbackContext callbackContext) {
 
-		timer = new Timer();
-		registerReceiver();
+        timer = new Timer();
+        registerReceiver();
         manager.clearLocalServices(channel, new ActionListener() {
             @Override
             public void onSuccess() {
