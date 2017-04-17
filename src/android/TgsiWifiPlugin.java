@@ -117,6 +117,7 @@ public class TgsiWifiPlugin extends CordovaPlugin implements WifiP2pManager.Conn
     @Override
     public void onPause(boolean multitasking) {
         super.onPause(multitasking);
+		LOG.d("TAG", "onPause");
 		if(receiver != null){
 			cordova.getActivity().unregisterReceiver(receiver);
 		}
