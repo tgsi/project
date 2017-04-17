@@ -96,8 +96,8 @@ public class TgsiWifiPlugin extends CordovaPlugin implements WifiP2pManager.Conn
         if (!wifiManager.isWifiEnabled()) {
             wifiManager.setWifiEnabled(flag);
         } else {
-			wifiManager.setWifiEnabled(flag);
-		}
+	    wifiManager.setWifiEnabled(flag);
+	}
     }
 
 
@@ -111,17 +111,14 @@ public class TgsiWifiPlugin extends CordovaPlugin implements WifiP2pManager.Conn
     public void onResume(boolean multitasking) {
         super.onResume(multitasking);
         LOG.d("TAG", "onResume");
-        //receiver = new P2pBroadcastReceiver(manager, channel, this);
-	    //cordova.getActivity().registerReceiver(receiver, intentFilter);
+        receiver = new P2pBroadcastReceiver(manager, channel, this);
+        cordova.getActivity().registerReceiver(receiver, intentFilter);
     }
 
     @Override
     public void onPause(boolean multitasking) {
         super.onPause(multitasking);
-		LOG.d("TAG", "onPause");
-		//if(receiver != null){
-		//	cordova.getActivity().unregisterReceiver(receiver);
-		//}
+        cordova.getActivity().unregisterReceiver(receiver);
     }
 
     @Override
@@ -154,10 +151,9 @@ public class TgsiWifiPlugin extends CordovaPlugin implements WifiP2pManager.Conn
         } else if (action.equals("stopServices")) {
             this.stopServices(callbackContext);
         } else if (action.equals("enabledWifi")){
-			String flag = args.getString(0);
-			this.enabledWifi(flag);
-		}
-		else {
+	    String flag = args.getString(0);
+	    this.enabledWifi(flag);
+	} else {
             return false;
         }
         return true;
@@ -263,6 +259,7 @@ public class TgsiWifiPlugin extends CordovaPlugin implements WifiP2pManager.Conn
                 );
             }
         };
+
         timer.scheduleAtFixedRate(timerTask, 0, 60 * 1000 );
     }
 
@@ -364,6 +361,7 @@ public class TgsiWifiPlugin extends CordovaPlugin implements WifiP2pManager.Conn
 
     }
 	
+
     private void getPeerList(final CallbackContext callbackContext) {
         List<WifiP2pDevice> servicePeer = getServicePeerList();
         List<WifiP2pDevice> peerList = receiver.getPeerList();
