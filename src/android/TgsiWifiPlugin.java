@@ -125,6 +125,7 @@ public class TgsiWifiPlugin extends CordovaPlugin implements WifiP2pManager.Conn
 		if(receiver != null){
 			LOG.d("TAG", "Receiver is not null");
 			cordova.getActivity().unregisterReceiver(receiver);
+			receiver = null;
 		}
     }
 
