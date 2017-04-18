@@ -111,14 +111,21 @@ public class TgsiWifiPlugin extends CordovaPlugin implements WifiP2pManager.Conn
     public void onResume(boolean multitasking) {
         super.onResume(multitasking);
         LOG.d("TAG", "onResume");
-	receiver = new P2pBroadcastReceiver(manager, channel, this);
-	cordova.getActivity().registerReceiver(receiver, intentFilter);
+		if(receiver == null){
+			LOG.d("TAG", "Receiver is null");
+			receiver = new P2pBroadcastReceiver(manager, channel, this);
+			cordova.getActivity().registerReceiver(receiver, intentFilter);
+		}
     }
 
     @Override
     public void onPause(boolean multitasking) {
         super.onPause(multitasking);
-        cordova.getActivity().unregisterReceiver(receiver);
+		LOG.d("TAG", "onPause");
+		if(receiver != null){
+			LOG.d("TAG", "Receiver is not null");
+			cordova.getActivity().unregisterReceiver(receiver);
+		}
     }
 
     @Override
