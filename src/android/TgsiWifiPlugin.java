@@ -130,6 +130,7 @@ public class TgsiWifiPlugin extends CordovaPlugin implements WifiP2pManager.Conn
 
     @Override
     public void onStop() {
+	    LOG.d("TAG", "onStop");
         removeGroup();
         super.onStop();
     }
@@ -498,7 +499,9 @@ public class TgsiWifiPlugin extends CordovaPlugin implements WifiP2pManager.Conn
     }
 
     private void stopServices(final CallbackContext callbackContext) {
-        cordova.getActivity().unregisterReceiver(receiver);
+		if(receiver != null){
+			cordova.getActivity().unregisterReceiver(receiver);
+		}
         removeGroup();
         callbackContext.success();
         stopTimer();
@@ -508,7 +511,7 @@ public class TgsiWifiPlugin extends CordovaPlugin implements WifiP2pManager.Conn
         if (manager != null && channel != null) {
             manager.removeGroup(channel, new ActionListener() {
 
-                @Override
+				@Override
                 public void onFailure(int reasonCode) {
                     Log.d(TAG, "Disconnect failed. Reason :" + reasonCode);
                 }
