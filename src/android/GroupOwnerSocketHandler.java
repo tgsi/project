@@ -52,7 +52,7 @@ public class GroupOwnerSocketHandler extends Thread {
             } catch (IOException e) {
                 try {
                     if (socket != null && !socket.isClosed())
-						LOG.d("TAG", "Group Owner Socket is Closed");
+						Log.d("TAG", "Group Owner Socket is Closed");
                         socket.close();
                 } catch (IOException ioe) {
 
