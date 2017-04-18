@@ -500,9 +500,7 @@ public class TgsiWifiPlugin extends CordovaPlugin implements WifiP2pManager.Conn
     }
 
     private void stopServices(final CallbackContext callbackContext) {
-		if(receiver != null){
-			cordova.getActivity().unregisterReceiver(receiver);
-		}
+		cordova.getActivity().unregisterReceiver(receiver);
         removeGroup();
         callbackContext.success();
         stopTimer();
