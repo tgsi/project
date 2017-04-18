@@ -23,8 +23,8 @@ public class ChatManager implements Runnable {
     private static final String TAG = ChatManager.class.getSimpleName();
 
 
-    public ChatManager(Socket mSocket, Handler handler) {
-        this.socket = mSocket;
+    public ChatManager(Socket socket, Handler handler) {
+        this.socket = socket;
         this.handler = handler;
     }
 
