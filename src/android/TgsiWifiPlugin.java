@@ -85,28 +85,20 @@ public class TgsiWifiPlugin extends CordovaPlugin implements WifiP2pManager.Conn
 
         LOG.d("TAG", "ENABLED");
         chatHandler = new Handler(this);
-        enabledWifi();
-        registerReceiver();
-        timer = new Timer();
+        //enabledWifi();
+        //registerReceiver();
+        //timer = new Timer();
     }
 
-    private void enabledWifi() {
+    private void enabledWifi(final String wifiFlag) {
         WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+        boolean flag = Boolean.parseBoolean(wifiFlag);
         if (!wifiManager.isWifiEnabled()) {
-            wifiManager.setWifiEnabled(true);
-        }
+            wifiManager.setWifiEnabled(flag);
+        } else {
+	    wifiManager.setWifiEnabled(flag);
+     }
     }
-
-
-//    private void enabledWifi(final String wifiFlag) {
-//        WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
-//        boolean flag = Boolean.parseBoolean(wifiFlag);
-//        if (!wifiManager.isWifiEnabled()) {
-//            wifiManager.setWifiEnabled(flag);
-//        } else {
-//	    wifiManager.setWifiEnabled(flag);
-     //}
-    //}
 
 
     private void registerReceiver() {
@@ -158,9 +150,9 @@ public class TgsiWifiPlugin extends CordovaPlugin implements WifiP2pManager.Conn
             this.sendMessage(message, callbackContext);
         } else if (action.equals("stopServices")) {
             this.stopServices(callbackContext);
-        //} else if (action.equals("enabledWifi")){
-	//    String flag = args.getString(0);
-	//    this.enabledWifi(flag);
+        } else if (action.equals("enabledWifi")){
+	    String flag = args.getString(0);
+	    this.enabledWifi(flag);
 	} else {
             return false;
         }
@@ -170,8 +162,8 @@ public class TgsiWifiPlugin extends CordovaPlugin implements WifiP2pManager.Conn
 
     private void registerService(final String peerName, final CallbackContext callbackContext) {
 
-        //timer = new Timer();
-        //registerReceiver();
+        timer = new Timer();
+        registerReceiver();
         manager.clearLocalServices(channel, new ActionListener() {
             @Override
             public void onSuccess() {
