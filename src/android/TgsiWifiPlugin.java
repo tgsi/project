@@ -133,7 +133,7 @@ public class TgsiWifiPlugin extends CordovaPlugin implements WifiP2pManager.Conn
     @Override
     public void onStop() {
 	    LOG.d("TAG", "onStop");
-        removeGroup();
+       // removeGroup();
         super.onStop();
     }
 

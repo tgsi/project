@@ -59,7 +59,7 @@ public class ChatManager implements Runnable {
             e.printStackTrace();
         } finally {
             try {
-				Log.d("TAG", "Chat Manager Socket has been closed");
+				Log.d(TAG, "Chat Manager Socket has been closed");
                 socket.close();
             } catch (IOException e) {
                 e.printStackTrace();
