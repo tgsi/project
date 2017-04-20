@@ -28,9 +28,6 @@ public class ClientSocketHandler extends Thread {
     @Override
     public void run() {
         Socket socket = new Socket();
-         // LETE ADD - START
-        socket.setReuseAddress(true);
-        // LETE ADD - END
         try {
             socket.bind(null);
             socket.connect(new InetSocketAddress(mAddress.getHostAddress(),
@@ -46,6 +43,6 @@ public class ClientSocketHandler extends Thread {
                 e1.printStackTrace();
             }
             return;
-        }
+        }00
     }
 }

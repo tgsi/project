@@ -23,6 +23,9 @@ public class GroupOwnerSocketHandler extends Thread {
     public GroupOwnerSocketHandler(Handler handler) throws IOException {
         try {
             socket = new ServerSocket(4545);
+            // LETE ADD - START
+           socket.setReuseAddress(true);
+           // LETE ADD - END
             this.handler = handler;
             Log.d("GroupOwnerSocketHandler", "Socket Started");
         } catch (IOException e) {
