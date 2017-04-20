@@ -43,6 +43,6 @@ public class ClientSocketHandler extends Thread {
                 e1.printStackTrace();
             }
             return;
-        }00
+        }
     }
 }
