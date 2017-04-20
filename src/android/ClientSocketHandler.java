@@ -29,6 +29,9 @@ public class ClientSocketHandler extends Thread {
     public void run() {
         Socket socket = new Socket();
         try {
+            // LETE ADD - START
+            socket.setReuseAddress(true);
+            // LETE ADD - END
             socket.bind(null);
             socket.connect(new InetSocketAddress(mAddress.getHostAddress(),
                     SERVER_PORT), 5000);
