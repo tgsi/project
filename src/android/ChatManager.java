@@ -52,7 +52,7 @@ public class ChatManager implements Runnable {
                     handler.obtainMessage(SystemConstant.MESSAGE_READ,
                             bytes, -1, buffer).sendToTarget();
                 } catch (IOException e) {
-                    Log.e(TAG, "disconnected", e);
+                    Log.e(TAG, "disconnected", e);					
                 }
             }
         } catch (IOException e) {
