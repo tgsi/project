@@ -23,17 +23,6 @@ public class GroupOwnerSocketHandler extends Thread {
 
     public GroupOwnerSocketHandler(Handler handler) throws IOException {
         try {
-
-		   if(socket.isBound()){
-		       try {
-			       if (socket != null && !socket.isClosed())
-						Log.d(TAG, "Group Owner Socket is Closed");
-                        socket.close();
-                } catch (IOException ioe) {
-
-                }
-		   }
-
            socket = new ServerSocket();
             // LETE ADD - START
            socket.setReuseAddress(true);
@@ -76,7 +65,15 @@ public class GroupOwnerSocketHandler extends Thread {
                 e.printStackTrace();
                 pool.shutdownNow();
                 break;
-            } 
+            } finally {
+                try {
+                    if (socket != null && !socket.isClosed())
+                        Log.d(TAG, "Group Owner Socket is Closed");
+                        socket.close();
+                } catch (IOException ioe) {
+
+                }
+            }
         }
     }
 
