@@ -76,15 +76,7 @@ public class GroupOwnerSocketHandler extends Thread {
                 e.printStackTrace();
                 pool.shutdownNow();
                 break;
-            } finally {
-				try {
-                    if (socket != null && !socket.isClosed())
-						Log.d(TAG, "Group Owner Socket is Closed");
-                        socket.close();
-                } catch (IOException ioe) {
-
-                }
-			}
+            } 
         }
     }
 
